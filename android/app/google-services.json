@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1018737562328",
+    "firebase_url": "https://smartyfridge.firebaseio.com",
+    "project_id": "smartyfridge",
+    "storage_bucket": "smartyfridge.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018737562328:android:c9bab4b50bb6cbc44cbdad",
+        "android_client_info": {
+          "package_name": "com.team4infinity.smartyfridge"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1018737562328-pfc6qgqr3qgafms1hgaiefjqqp9c289n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlaY4uv-wAn-yUe2Pyehzln01s4JluQ7o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1018737562328-pfc6qgqr3qgafms1hgaiefjqqp9c289n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
