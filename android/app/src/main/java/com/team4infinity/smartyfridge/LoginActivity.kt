@@ -1,5 +1,6 @@
 package com.team4infinity.smartyfridge
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -27,7 +28,12 @@ class LoginActivity : AppCompatActivity() {
         auth.signOut()
         btn.setOnClickListener { v ->
             auth.signInWithEmailAndPassword(email.text.toString(),password.text.toString()).addOnSuccessListener {
-                authResult -> Toast.makeText(this,"Logging in",Toast.LENGTH_SHORT).show()
+                authResult ->
+                run {
+                    Toast.makeText(this, "Logging in", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this,MainActivity::class.java)
+                    startActivity(intent)
+                }
             }.addOnFailureListener { exception -> Toast.makeText(this,"Email or password is wrong",Toast.LENGTH_SHORT).show() }
         }
     }
