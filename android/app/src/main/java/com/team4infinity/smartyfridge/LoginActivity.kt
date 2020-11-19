@@ -21,11 +21,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        auth = Firebase.auth
-        email = findViewById(R.id.emailLogin)
-        password = findViewById(R.id.passwordLogin)
-        btn = findViewById(R.id.loginBtn)
-        auth.signOut()
+        init()
         btn.setOnClickListener { v ->
             auth.signInWithEmailAndPassword(email.text.toString(),password.text.toString()).addOnSuccessListener {
                 authResult ->
@@ -36,5 +32,11 @@ class LoginActivity : AppCompatActivity() {
                 }
             }.addOnFailureListener { exception -> Toast.makeText(this,"Email or password is wrong",Toast.LENGTH_SHORT).show() }
         }
+    }
+    private fun init(){
+        auth = Firebase.auth
+        email = findViewById(R.id.emailLogin)
+        password = findViewById(R.id.passwordLogin)
+        btn = findViewById(R.id.loginBtn)
     }
 }
