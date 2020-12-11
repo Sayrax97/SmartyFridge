@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav"
+    app:startDestination="@id/bnb_home">
+
+    <fragment
+        android:id="@+id/bnb_home"
+        android:name="com.team4infinity.smartyfridge.fragments.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" />
+    <fragment
+        android:id="@+id/bnb_fridge"
+        android:name="com.team4infinity.smartyfridge.fragments.FridgeFragment"
+        android:label="fragment_fridge"
+        tools:layout="@layout/fragment_fridge" />
+    <fragment
+        android:id="@+id/bnb_recipes"
+        android:name="com.team4infinity.smartyfridge.fragments.RecipesFragment"
+        android:label="fragment_recipes"
+        tools:layout="@layout/fragment_recipes" />
+</navigation>

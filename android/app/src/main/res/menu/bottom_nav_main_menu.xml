@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/bnb_fridge"
+        android:icon="@drawable/refrigerator"
+        android:title="@string/your_fridge"/>
+    <item
+        android:id="@+id/bnb_home"
+        android:checked="true"
+        android:icon="@drawable/home"
+        android:title="@string/home"/>
+    <item
+        android:id="@+id/bnb_recipes"
+        android:icon="@drawable/recipe_book"
+        android:title="@string/recipes"/>
+</menu>
