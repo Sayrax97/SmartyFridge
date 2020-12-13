@@ -32,9 +32,10 @@ class CreateAccount : AppCompatActivity() {
     private lateinit var createAccountBtn:Button
     private lateinit var cbGroup:CheckBox
     private lateinit var groupID:EditText
-    private var pomCB:Boolean = false
+    private var groupChecked:Boolean = false
     private lateinit var userGroupID:String
     private val FIREBASE_GROUP:String="Group"
+    private val FIREBASE_GROUP_IDs:String="GroupIDs"
     private val TAG = "CreateAccount"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,11 +45,12 @@ class CreateAccount : AppCompatActivity() {
         cbGroup.setOnCheckedChangeListener{ cb, isChecked->
             if(isChecked){
                 groupID.setVisibility(View.VISIBLE)
-                pomCB = true;
+                groupChecked = true;
             }
             else{
                 groupID.setVisibility(View.INVISIBLE)
-                pomCB = false;
+                groupID.setText("")
+                groupChecked = false;
             }
         }
 
@@ -66,7 +68,8 @@ class CreateAccount : AppCompatActivity() {
             else if(password.text.toString()!=confirmPassword.text.toString())
                 Toast.makeText(this, "Your passwords do not match", Toast.LENGTH_SHORT).show()
             else{
-                    createGroup()
+//                    createGroup()
+                    createGroupOptional()
                 }
             }
         }
@@ -85,7 +88,7 @@ class CreateAccount : AppCompatActivity() {
     }
 
     private fun createGroup(){
-        if(pomCB){
+        if(groupChecked){
             if(groupID.text.isEmpty()) {
                 Toast.makeText(this, "Please enter group ID", Toast.LENGTH_SHORT).show()
             }
@@ -121,14 +124,14 @@ class CreateAccount : AppCompatActivity() {
             }
         }
         else {
-            val id: String = db.child(FIREBASE_GROUP).push().key.toString()
+            val key: String = db.child(FIREBASE_GROUP).push().key.toString()
             var exists: Boolean = true
             var idGroup: String = ""
             db.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     while (exists) {
-                        var random: Int = Random.nextInt(0, id.length - 6)
-                        idGroup = id.substring(random, random + 6)
+                        var random: Int = Random.nextInt(0, key.length - 6)
+                        idGroup = key.substring(random, random + 6)
                         if (snapshot.hasChild(FIREBASE_GROUP)) {
                             val groups = ArrayList<Group?>()
                             for (groupSnapshot in snapshot.child(FIREBASE_GROUP).getChildren()) {
@@ -151,8 +154,8 @@ class CreateAccount : AppCompatActivity() {
                     }
                     var group: Group
                     group = Group("",idGroup)
-                    db.child(FIREBASE_GROUP).child(id).setValue(group)
-                    userGroupID = id
+                    db.child(FIREBASE_GROUP).child(key).setValue(group)
+                    userGroupID = key
 
                     auth.createUserWithEmailAndPassword(email.text.toString(), password.text.toString()).addOnSuccessListener{ authResult->
                         var uid = authResult.user?.uid
@@ -171,5 +174,105 @@ class CreateAccount : AppCompatActivity() {
             })
 
         }
+    }
+
+    private fun createGroupOptional(){
+        if (groupChecked){
+            if(groupID.text.isEmpty()) {
+                Toast.makeText(this, "Please enter Group ID", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                db.child(FIREBASE_GROUP_IDs).addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val groupsIds = mutableListOf<String?>()
+                        if (snapshot.exists()) {
+                            for (id in snapshot.children) {
+                                groupsIds.add(id.getValue<String>())
+                            }
+                            userGroupID = ""
+                            groupsIds.forEachIndexed{ index, item ->
+                                if (item == groupID.text.toString()) {
+                                    userGroupID = item
+                                }
+                            }
+                            if(userGroupID.isEmpty()){
+                                Toast.makeText(this@CreateAccount, "There is no Groups with specified ID", Toast.LENGTH_SHORT).show()
+                                return
+                            }
+                            auth.createUserWithEmailAndPassword(email.text.toString(), password.text.toString()).addOnSuccessListener{ authResult->
+                                var uid = authResult.user?.uid
+                                if (uid != null){
+                                    val user = User(name.text.toString(), surname.text.toString(), email.text.toString(), password.text.toString(),userGroupID)
+                                    db.child("users").child(uid).setValue(user)
+                                }
+                                val intent=Intent(this@CreateAccount, MainActivity::class.java)
+                                startActivity(intent)
+                            }.addOnFailureListener{ authResult->Toast.makeText(this@CreateAccount, "Authentication error", Toast.LENGTH_SHORT).show()}
+                        }
+                        else {
+                            Toast.makeText(this@CreateAccount, "There is no Groups with specified ID", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                })
+            }
+        }
+        else{
+            userGroupID = "VuKL62"
+            db.child(FIREBASE_GROUP_IDs).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val groupsIds = mutableListOf<String?>()
+                    if (snapshot.exists()) {
+                        var done: Boolean = false
+                        while (!done) {
+                            run loop@{
+                                snapshot.children.forEach { item ->
+                                    Log.d(TAG, "onDataChange CHILD: ${item.value.toString()} ")
+                                    if (item.value.toString() == userGroupID) {
+                                        groupsIds.clear()
+                                        generateGroupID()
+                                        return@loop
+                                    } else {
+                                        groupsIds.add(item.value.toString())
+                                    }
+                                }
+                                groupsIds.add(userGroupID)
+                                done = true
+                            }
+
+                        }
+                        val group = Group(id = userGroupID, name = "")
+                        auth.createUserWithEmailAndPassword(email.text.toString(), password.text.toString()).addOnSuccessListener { authResult ->
+                            var uid = authResult.user?.uid
+                            if (uid != null) {
+                                val user = User(name.text.toString(), surname.text.toString(), email.text.toString(), password.text.toString(), userGroupID)
+                                db.child("users").child(uid).setValue(user)
+                                db.child(FIREBASE_GROUP_IDs).setValue(groupsIds)
+                                db.child(FIREBASE_GROUP).child(group.id).setValue(group)
+                            }
+                            val intent = Intent(this@CreateAccount, MainActivity::class.java)
+                            startActivity(intent)
+                        }.addOnFailureListener { authResult -> Toast.makeText(this@CreateAccount, "Authentication error", Toast.LENGTH_SHORT).show() }
+                    } else {
+                        val groupsIds = listOf<String>(userGroupID)
+                        db.child(FIREBASE_GROUP_IDs).setValue(groupsIds)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d(TAG, "onCancelled: CANCELED")
+                }
+            })
+        }
+    }
+    private fun generateGroupID(){
+        val key:String = db.child(FIREBASE_GROUP).push().key.toString()
+        val charCount:Int = 6
+        val random:Int = Random.nextInt(0,key.length-charCount)
+        userGroupID = key.substring(random,random + charCount)
+        Log.d(TAG, "createGroupOptional: $key")
     }
 }
