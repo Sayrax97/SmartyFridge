@@ -75,18 +75,20 @@
         android:inputType="textPassword" />
 
     <CheckBox
-        android:id="@+id/checkBox"
+        android:id="@+id/cbGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Joining an existing group?" />
+        android:text="Joining an existing group?"
+        />
 
     <EditText
-        android:id="@+id/editTextTextPersonName3"
+        android:id="@+id/editGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="@string/group_id" />
+        android:text="@string/group_id"
+        android:visibility="invisible"/>
 
     <Button
         android:id="@+id/btnCreateAccount"
