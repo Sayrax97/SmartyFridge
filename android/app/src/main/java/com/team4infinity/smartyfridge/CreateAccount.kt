@@ -221,7 +221,7 @@ class CreateAccount : AppCompatActivity() {
             }
         }
         else{
-            userGroupID = "VuKL62"
+            generateGroupID()
             db.child(FIREBASE_GROUP_IDs).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val groupsIds = mutableListOf<String?>()
