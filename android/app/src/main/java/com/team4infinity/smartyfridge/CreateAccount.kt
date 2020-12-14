@@ -18,6 +18,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
+
 import com.team4infinity.smartyfridge.models.User
 import java.io.ByteArrayOutputStream
 
