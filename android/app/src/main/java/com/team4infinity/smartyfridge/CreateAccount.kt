@@ -107,7 +107,8 @@ class CreateAccount : AppCompatActivity() {
                                 if(value.id == groupID.text.toString())
                                     userGroupID=key;
                         }
-                        createAuthUser()
+                        //TODO
+                        //createAuthUser()
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -149,8 +150,8 @@ class CreateAccount : AppCompatActivity() {
                     group = Group("",idGroup)
                     db.child(FIREBASE_GROUP).child(key).setValue(group)
                     userGroupID = key
-
-                   createAuthUser()
+                    //TODO
+                   //createAuthUser()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -160,6 +161,7 @@ class CreateAccount : AppCompatActivity() {
 
         }
     }
+
     private fun init(){
         auth= Firebase.auth
         storage = FirebaseStorage.getInstance().reference
@@ -177,6 +179,7 @@ class CreateAccount : AppCompatActivity() {
             pickImage()
         }
     }
+
     private fun pickImage() {
         val i = Intent()
         i.type = "image/*"
@@ -207,7 +210,8 @@ class CreateAccount : AppCompatActivity() {
                                 Toast.makeText(this@CreateAccount, "There is no Groups with specified ID", Toast.LENGTH_SHORT).show()
                                 return
                             }
-                           createAuthUser()
+                            val group = Group(id = userGroupID, name = "")
+                           createAuthUser(group,groupsIds)
                         }
                         else {
                             Toast.makeText(this@CreateAccount, "There is no Groups with specified ID", Toast.LENGTH_SHORT).show()
@@ -245,20 +249,11 @@ class CreateAccount : AppCompatActivity() {
 
                         }
                         val group = Group(id = userGroupID, name = "")
-                        auth.createUserWithEmailAndPassword(email.text.toString(), password.text.toString()).addOnSuccessListener { authResult ->
-                            var uid = authResult.user?.uid
-                            if (uid != null) {
-                                val user = User(name.text.toString(), surname.text.toString(), email.text.toString(), password.text.toString(), userGroupID)
-                                db.child("users").child(uid).setValue(user)
-                                db.child(FIREBASE_GROUP_IDs).setValue(groupsIds)
-                                db.child(FIREBASE_GROUP).child(group.id).setValue(group)
-                            }
-                            val intent = Intent(this@CreateAccount, MainActivity::class.java)
-                            startActivity(intent)
-                        }.addOnFailureListener { authResult -> Toast.makeText(this@CreateAccount, "Authentication error", Toast.LENGTH_SHORT).show() }
+                        createAuthUser(group,groupsIds)
                     } else {
-                        val groupsIds = listOf<String>(userGroupID)
-                        db.child(FIREBASE_GROUP_IDs).setValue(groupsIds)
+                        val groupsIds = mutableListOf<String?>(userGroupID)
+                        val group = Group(id = userGroupID, name = "")
+                        createAuthUser(group,groupsIds)
                     }
                 }
 
@@ -268,6 +263,7 @@ class CreateAccount : AppCompatActivity() {
             })
         }
     }
+
     private fun generateGroupID() {
         val key: String = db.child(FIREBASE_GROUP).push().key.toString()
         val charCount: Int = 6
@@ -275,6 +271,7 @@ class CreateAccount : AppCompatActivity() {
         userGroupID = key.substring(random, random + charCount)
         Log.d(TAG, "createGroupOptional: $key")
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
@@ -286,6 +283,7 @@ class CreateAccount : AppCompatActivity() {
             }
         }
     }
+
     private fun uploadImage() {
         val currentUser = auth.currentUser
         val bitmap = (profilePictureImageVIew.drawable as BitmapDrawable).bitmap
@@ -295,6 +293,7 @@ class CreateAccount : AppCompatActivity() {
         storage.child("user").child(currentUser!!.uid).child("profile").putBytes(data)
 //        storage.child(USER_CHILD).child(currentUser.getUid()).child("profile").putFile(imageUri);
     }
+
     private fun storeUser(uid: String, gid: String){
         val user = User(
             name.text.toString(),
@@ -305,11 +304,14 @@ class CreateAccount : AppCompatActivity() {
         )
         db.child("users").child(uid).setValue(user)
     }
-    private fun createAuthUser(){
+
+    private fun createAuthUser(group: Group, groupsIds: MutableList<String?>){
         auth.createUserWithEmailAndPassword(email.text.toString(), password.text.toString()).addOnSuccessListener{ authResult->
             var uid = authResult.user?.uid
             if (uid != null){
                 storeUser(uid,userGroupID)
+                db.child(FIREBASE_GROUP_IDs).setValue(groupsIds)
+                db.child(FIREBASE_GROUP).child(group.id).setValue(group)
             }
             else return@addOnSuccessListener
             uploadImage()
