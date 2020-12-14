@@ -55,24 +55,8 @@ class CreateAccount : AppCompatActivity() {
             else if(password.text.toString()!=confirmPassword.text.toString())
                 Toast.makeText(this, "Your passwords do not match", Toast.LENGTH_SHORT).show()
             else{
-                auth.createUserWithEmailAndPassword(email.text.toString(), password.text.toString()).addOnSuccessListener{ authResult->
-                    var uid = authResult.user?.uid
-                    if (uid != null){
-                       storeUser(uid)
-                    }
-                    else return@addOnSuccessListener
-                    uploadImage()
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                }.addOnFailureListener{ authResult -> Toast.makeText(
-                    this,
-                    "Authentication error",
-                    Toast.LENGTH_SHORT
-                ).show()}
+                createAuthUser()
             }
-        }
-        profilePictureImageVIew.setOnClickListener {
-            pickImage()
         }
     }
 
@@ -87,6 +71,9 @@ class CreateAccount : AppCompatActivity() {
         confirmPassword=findViewById(R.id.editConfirmPassword);
         createAccountBtn=findViewById(R.id.btnCreateAccount);
         profilePictureImageVIew = findViewById(R.id.editProfilePicture)
+        profilePictureImageVIew.setOnClickListener {
+            pickImage()
+        }
     }
     private fun pickImage() {
         val i = Intent()
@@ -123,5 +110,21 @@ class CreateAccount : AppCompatActivity() {
             password.text.toString()
         )
         db.child("users").child(uid).setValue(user)
+    }
+    private fun createAuthUser(){
+        auth.createUserWithEmailAndPassword(email.text.toString(), password.text.toString()).addOnSuccessListener{ authResult->
+            var uid = authResult.user?.uid
+            if (uid != null){
+                storeUser(uid)
+            }
+            else return@addOnSuccessListener
+            uploadImage()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }.addOnFailureListener{ authResult -> Toast.makeText(
+                this,
+                "Authentication error",
+                Toast.LENGTH_SHORT
+            ).show()}
     }
 }
