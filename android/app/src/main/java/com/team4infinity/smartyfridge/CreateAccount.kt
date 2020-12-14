@@ -88,19 +88,6 @@ class CreateAccount : AppCompatActivity() {
             }
         }
 
-    private fun init(){
-        auth = Firebase.auth
-        db = FirebaseDatabase.getInstance().reference
-        name = findViewById(R.id.editName)
-        surname = findViewById(R.id.editSurname)
-        email = findViewById(R.id.editEmail)
-        password = findViewById(R.id.editPassword)
-        confirmPassword = findViewById(R.id.editConfirmPassword)
-        createAccountBtn = findViewById(R.id.btnCreateAccount)
-        cbGroup = findViewById(R.id.cbGroup)
-        groupID = findViewById(R.id.editGroup)
-    }
-
     private fun createGroup(){
         if(groupChecked){
             if(groupID.text.isEmpty()) {
@@ -120,15 +107,7 @@ class CreateAccount : AppCompatActivity() {
                                 if(value.id == groupID.text.toString())
                                     userGroupID=key;
                         }
-                        auth.createUserWithEmailAndPassword(email.text.toString(), password.text.toString()).addOnSuccessListener{ authResult->
-                            var uid = authResult.user?.uid
-                            if (uid != null){
-                                val user = User(name.text.toString(), surname.text.toString(), email.text.toString(), password.text.toString(),userGroupID)
-                                db.child("users").child(uid).setValue(user)
-                            }
-                            val intent=Intent(this@CreateAccount, MainActivity::class.java)
-                            startActivity(intent)
-                        }.addOnFailureListener{ authResult->Toast.makeText(this@CreateAccount, "Authentication error", Toast.LENGTH_SHORT).show()}
+                        createAuthUser()
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -171,15 +150,7 @@ class CreateAccount : AppCompatActivity() {
                     db.child(FIREBASE_GROUP).child(key).setValue(group)
                     userGroupID = key
 
-                    auth.createUserWithEmailAndPassword(email.text.toString(), password.text.toString()).addOnSuccessListener{ authResult->
-                        var uid = authResult.user?.uid
-                        if (uid != null){
-                            val user = User(name.text.toString(), surname.text.toString(), email.text.toString(), password.text.toString(),userGroupID)
-                            db.child("users").child(uid).setValue(user)
-                        }
-                        val intent=Intent(this@CreateAccount, MainActivity::class.java)
-                        startActivity(intent)
-                    }.addOnFailureListener{ authResult->Toast.makeText(this@CreateAccount, "Authentication error", Toast.LENGTH_SHORT).show()}
+                   createAuthUser()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -199,6 +170,8 @@ class CreateAccount : AppCompatActivity() {
         password=findViewById(R.id.editPassword);
         confirmPassword=findViewById(R.id.editConfirmPassword);
         createAccountBtn=findViewById(R.id.btnCreateAccount);
+        cbGroup = findViewById(R.id.cbGroup)
+        groupID = findViewById(R.id.editGroup)
         profilePictureImageVIew = findViewById(R.id.editProfilePicture)
         profilePictureImageVIew.setOnClickListener {
             pickImage()
@@ -234,15 +207,7 @@ class CreateAccount : AppCompatActivity() {
                                 Toast.makeText(this@CreateAccount, "There is no Groups with specified ID", Toast.LENGTH_SHORT).show()
                                 return
                             }
-                            auth.createUserWithEmailAndPassword(email.text.toString(), password.text.toString()).addOnSuccessListener{ authResult->
-                                var uid = authResult.user?.uid
-                                if (uid != null){
-                                    val user = User(name.text.toString(), surname.text.toString(), email.text.toString(), password.text.toString(),userGroupID)
-                                    db.child("users").child(uid).setValue(user)
-                                }
-                                val intent=Intent(this@CreateAccount, MainActivity::class.java)
-                                startActivity(intent)
-                            }.addOnFailureListener{ authResult->Toast.makeText(this@CreateAccount, "Authentication error", Toast.LENGTH_SHORT).show()}
+                           createAuthUser()
                         }
                         else {
                             Toast.makeText(this@CreateAccount, "There is no Groups with specified ID", Toast.LENGTH_SHORT).show()
@@ -303,12 +268,13 @@ class CreateAccount : AppCompatActivity() {
             })
         }
     }
-    private fun generateGroupID(){
-        val key:String = db.child(FIREBASE_GROUP).push().key.toString()
-        val charCount:Int = 6
-        val random:Int = Random.nextInt(0,key.length-charCount)
-        userGroupID = key.substring(random,random + charCount)
+    private fun generateGroupID() {
+        val key: String = db.child(FIREBASE_GROUP).push().key.toString()
+        val charCount: Int = 6
+        val random: Int = Random.nextInt(0, key.length - charCount)
+        userGroupID = key.substring(random, random + charCount)
         Log.d(TAG, "createGroupOptional: $key")
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
@@ -329,12 +295,13 @@ class CreateAccount : AppCompatActivity() {
         storage.child("user").child(currentUser!!.uid).child("profile").putBytes(data)
 //        storage.child(USER_CHILD).child(currentUser.getUid()).child("profile").putFile(imageUri);
     }
-    private fun storeUser(uid: String){
+    private fun storeUser(uid: String, gid: String){
         val user = User(
             name.text.toString(),
             surname.text.toString(),
             email.text.toString(),
-            password.text.toString()
+            password.text.toString(),
+            gid
         )
         db.child("users").child(uid).setValue(user)
     }
@@ -342,7 +309,7 @@ class CreateAccount : AppCompatActivity() {
         auth.createUserWithEmailAndPassword(email.text.toString(), password.text.toString()).addOnSuccessListener{ authResult->
             var uid = authResult.user?.uid
             if (uid != null){
-                storeUser(uid)
+                storeUser(uid,userGroupID)
             }
             else return@addOnSuccessListener
             uploadImage()
