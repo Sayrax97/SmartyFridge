@@ -78,19 +78,21 @@
             android:ems="10"
             android:inputType="textPassword" />
 
-        <CheckBox
-            android:id="@+id/checkBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Joining an existing group?" />
+    <CheckBox
+        android:id="@+id/cbGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Joining an existing group?"
+        />
 
-        <EditText
-            android:id="@+id/editTextTextPersonName3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="@string/group_id" />
+    <EditText
+        android:id="@+id/editGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="@string/group_id"
+        android:visibility="invisible"/>
 
         <Button
             android:id="@+id/btnCreateAccount"
