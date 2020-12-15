@@ -23,6 +23,10 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
         init()
         btn.setOnClickListener { v ->
+            if (email.text.isEmpty() or password.text.isEmpty()){
+                Toast.makeText(this,"Please enter Email and Password",Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             auth.signInWithEmailAndPassword(email.text.toString(),password.text.toString()).addOnSuccessListener {
                 authResult ->
                 run {
