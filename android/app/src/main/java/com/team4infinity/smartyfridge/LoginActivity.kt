@@ -10,10 +10,15 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.FirebaseAuthKtxRegistrar
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
-    private lateinit var auth:FirebaseAuth
+    @Inject
+    lateinit var auth :FirebaseAuth
     private lateinit var email:EditText
     private lateinit var password:EditText
     private lateinit var btn:Button
@@ -38,9 +43,9 @@ class LoginActivity : AppCompatActivity() {
         }
     }
     private fun init(){
-        auth = Firebase.auth
         email = findViewById(R.id.emailLogin)
         password = findViewById(R.id.passwordLogin)
         btn = findViewById(R.id.loginBtn)
+        //auth = FirebaseAuth.getInstance()
     }
 }
