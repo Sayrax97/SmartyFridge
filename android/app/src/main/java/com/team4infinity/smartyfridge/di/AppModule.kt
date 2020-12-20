@@ -13,16 +13,19 @@ import dagger.hilt.android.components.ApplicationComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ActivityComponent::class)
+@InstallIn(ApplicationComponent::class)
 object AppModule {
+    @Singleton
     @Provides
     fun provideFirebaseAuth(): FirebaseAuth{
         return FirebaseAuth.getInstance()
     }
+    @Singleton
     @Provides
     fun provideFirebaseDatabaseRef(): DatabaseReference{
         return FirebaseDatabase.getInstance().reference
     }
+    @Singleton
     @Provides
     fun provideFirebaseStorageRef(): StorageReference{
         return FirebaseStorage.getInstance().reference
