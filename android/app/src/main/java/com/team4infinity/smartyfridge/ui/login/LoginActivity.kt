@@ -1,28 +1,22 @@
-package com.team4infinity.smartyfridge
+package com.team4infinity.smartyfridge.ui.login
 
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.FirebaseAuthKtxRegistrar
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.ktx.Firebase
+import androidx.activity.viewModels
+import com.team4infinity.smartyfridge.R
+import com.team4infinity.smartyfridge.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
-    @Inject
-    lateinit var auth :FirebaseAuth
     private lateinit var email:EditText
     private lateinit var password:EditText
     private lateinit var btn:Button
+    private val viewModel : LoginActivityViewModel by viewModels()
     private val TAG = "LoginActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,20 +27,35 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this,"Please enter Email and Password",Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            auth.signInWithEmailAndPassword(email.text.toString(),password.text.toString()).addOnSuccessListener {
-                authResult ->
-                run {
-                    Toast.makeText(this, "Logging in", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this,MainActivity::class.java)
-                    startActivity(intent)
-                }
-            }.addOnFailureListener { exception -> Toast.makeText(this,"Email or password is wrong",Toast.LENGTH_SHORT).show() }
+            viewModel.login(email.text.toString(), password.text.toString())
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+//        if (viewModel.getCurrentUser() != null){
+//            println("Postoji user: ${viewModel.getCurrentUser()?.email}")
+//            changeActivity()
+//        }
+    }
+
     private fun init(){
         email = findViewById(R.id.emailLogin)
         password = findViewById(R.id.passwordLogin)
         btn = findViewById(R.id.loginBtn)
-        //auth = FirebaseAuth.getInstance()
+        viewModel.isLoggedIn().observe(this,{
+            value ->
+            if (value){
+                Toast.makeText(this, "Logging in", Toast.LENGTH_SHORT).show()
+                changeActivity()
+            }
+            else{
+                Toast.makeText(this,"Email or password is wrong",Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+    private fun changeActivity(){
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
     }
 }
