@@ -5,5 +5,5 @@ data class GroupDTO(
         val Name :String,
         val CartId :String,
         val FridgeId :String,
-        val RecipeList :String
+        val RecipeListId :String
 )

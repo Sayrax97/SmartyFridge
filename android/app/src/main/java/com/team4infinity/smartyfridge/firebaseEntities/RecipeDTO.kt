@@ -6,5 +6,6 @@ data class RecipeDTO(
         val Description :String,
         val NumOfPeople :Int,
         val TimeRequired :Int,
+        val Rating :Double,
         val Category :String
 )
