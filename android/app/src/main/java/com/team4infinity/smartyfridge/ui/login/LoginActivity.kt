@@ -3,6 +3,7 @@ package com.team4infinity.smartyfridge.ui.login
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -17,7 +18,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var password:EditText
     private lateinit var btn:Button
     private val viewModel : LoginActivityViewModel by viewModels()
-    private val TAG = "LoginActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -27,7 +27,15 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this,"Please enter Email and Password",Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            viewModel.login(email.text.toString(), password.text.toString())
+            viewModel.login(email.text.toString(),password.text.toString())
+            viewModel.loggedIn.observe(this, { value ->
+                if (value) {
+                    Toast.makeText(this, "Logging in", Toast.LENGTH_SHORT).show()
+                    changeActivity()
+                } else {
+                    Toast.makeText(this, "Email or password is wrong", Toast.LENGTH_SHORT).show()
+                }
+            })
         }
     }
 
@@ -43,16 +51,6 @@ class LoginActivity : AppCompatActivity() {
         email = findViewById(R.id.emailLogin)
         password = findViewById(R.id.passwordLogin)
         btn = findViewById(R.id.loginBtn)
-        viewModel.isLoggedIn().observe(this,{
-            value ->
-            if (value){
-                Toast.makeText(this, "Logging in", Toast.LENGTH_SHORT).show()
-                changeActivity()
-            }
-            else{
-                Toast.makeText(this,"Email or password is wrong",Toast.LENGTH_SHORT).show()
-            }
-        })
     }
     private fun changeActivity(){
         val intent = Intent(this, MainActivity::class.java)
