@@ -13,10 +13,10 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
-    private lateinit var email:EditText
-    private lateinit var password:EditText
-    private lateinit var btn:Button
-    private val viewModel : LoginActivityViewModel by viewModels()
+    private lateinit var email: EditText
+    private lateinit var password: EditText
+    private lateinit var btn: Button
+    private val viewModel: LoginActivityViewModel by viewModels()
     private val TAG = "LoginActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,10 +33,10 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.getCurrentUser() != null){
-            println("Postoji user: ${viewModel.getCurrentUser()?.email}")
-            changeActivity()
-        }
+//        if (viewModel.getCurrentUser() != null){
+//            println("Postoji user: ${viewModel.getCurrentUser()?.email}")
+//            changeActivity()
+//        }
     }
 
     private fun init(){

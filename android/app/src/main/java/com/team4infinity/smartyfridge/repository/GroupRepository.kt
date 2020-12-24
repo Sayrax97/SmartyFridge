@@ -17,7 +17,7 @@ import com.team4infinity.smartyfridge.utils.TAG
 
 class GroupRepository (var databaseReference: DatabaseReference): IGroupRepository {
     override fun getGroup(groupId: String): MutableLiveData<GroupDTO> {
-        val group: MutableLiveData<GroupDTO>  = MutableLiveData()
+        val group: MutableLiveData<GroupDTO> = MutableLiveData()
         databaseReference.child(FIREBASE_DB_GROUP).child(groupId).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val value = snapshot.getValue<GroupDTO>()
@@ -32,7 +32,7 @@ class GroupRepository (var databaseReference: DatabaseReference): IGroupReposito
     }
 
     override fun getAllGroupIds(): MutableLiveData<List<String>> {
-        val groupIds:MutableLiveData<List<String>> = MutableLiveData()
+        val groupIds: MutableLiveData<List<String>> = MutableLiveData()
         databaseReference.child(FIREBASE_DB_GROUP_IDs).addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val value = snapshot.getValue<List<String>>()
