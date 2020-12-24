@@ -2,17 +2,17 @@ package com.team4infinity.smartyfridge.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.activity.viewModels
+import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.team4infinity.smartyfridge.R
 import dagger.hilt.android.AndroidEntryPoint
+import com.team4infinity.smartyfridge.utils.TAG
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val TAG = "MainActivity"
     lateinit var bottomNavBar:BottomNavigationView
     lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {
