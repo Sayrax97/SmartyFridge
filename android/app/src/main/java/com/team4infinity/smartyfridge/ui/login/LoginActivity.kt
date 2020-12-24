@@ -27,7 +27,15 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this,"Please enter Email and Password",Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            viewModel.login(email.text.toString(), password.text.toString())
+            viewModel.login(email.text.toString(),password.text.toString())
+            viewModel.loggedIn.observe(this, { value ->
+                if (value) {
+                    Toast.makeText(this, "Logging in", Toast.LENGTH_SHORT).show()
+                    changeActivity()
+                } else {
+                    Toast.makeText(this, "Email or password is wrong", Toast.LENGTH_SHORT).show()
+                }
+            })
         }
     }
 
@@ -43,16 +51,6 @@ class LoginActivity : AppCompatActivity() {
         email = findViewById(R.id.emailLogin)
         password = findViewById(R.id.passwordLogin)
         btn = findViewById(R.id.loginBtn)
-        viewModel.isLoggedIn().observe(this,{
-            value ->
-            if (value){
-                Toast.makeText(this, "Logging in", Toast.LENGTH_SHORT).show()
-                changeActivity()
-            }
-            else{
-                Toast.makeText(this,"Email or password is wrong",Toast.LENGTH_SHORT).show()
-            }
-        })
     }
     private fun changeActivity(){
         val intent = Intent(this, MainActivity::class.java)

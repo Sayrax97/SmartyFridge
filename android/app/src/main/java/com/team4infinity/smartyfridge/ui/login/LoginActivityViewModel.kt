@@ -12,17 +12,10 @@ class LoginActivityViewModel
     @ViewModelInject
     constructor(private val repository: IAuthRepository): ViewModel() {
 
-    private var _loggedIn: MutableLiveData<Boolean> = MutableLiveData()
+    lateinit var loggedIn: LiveData<Boolean>
 
     fun login(email:String, password: String){
-        repository.login(email,password).addOnSuccessListener {
-            _loggedIn.value = true
-        }.addOnFailureListener {
-            _loggedIn.value = false
-        }
-    }
-    fun isLoggedIn():LiveData<Boolean>{
-        return _loggedIn
+        loggedIn = repository.login(email,password)
     }
     fun getCurrentUser(): FirebaseUser? {
         return repository.getCurrentUser()
