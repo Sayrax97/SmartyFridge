@@ -42,10 +42,10 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-//        if (viewModel.getCurrentUser() != null){
-//            println("Postoji user: ${viewModel.getCurrentUser()?.email}")
-//            changeActivity()
-//        }
+        if (viewModel.getCurrentUser() != null){
+            println("Postoji user: ${viewModel.getCurrentUser()?.email}")
+            changeActivity()
+        }
     }
 
     private fun init(){

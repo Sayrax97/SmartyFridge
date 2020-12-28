@@ -2,6 +2,8 @@ package com.team4infinity.smartyfridge.utils
 
 //ANDROID
 const val TAG = "SmartFridge - DEBUG"
+const val PAGE_SIZE = 5
+
 
 //REALTIME DATABASE KEYS
 const val FIREBASE_DB_USERS = "users"
